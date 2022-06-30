@@ -33,12 +33,13 @@ const SignUp = ({navigation}) => {
   const [image, setImage] = useState('null');
 
   const [vendor, setVendor] = useState([
-    {icon: <Bridal />, id: '1'},
-    {icon: <Catering />, id: '2',},
-    {icon: <Photographer />, id: '3',},
-    {icon: <Venue />,id: '4',},
-    {icon: <WO />,id: '5',} 
+    {icon: <Bridal />, id: '1', vendorName:'Bridal'},
+    {icon: <Catering />, id: '2', vendorName:'Catering'},
+    {icon: <Photographer />, id: '3', vendorName:'Photographer'},
+    {icon: <Venue />,id: '4', vendorName:'Venue'},
+    {icon: <WO />,id: '5', vendorName:'WO'} 
   ]);
+  console.log('vendorName', vendor);
 
   const [selectVendor, setSelectVendor] = useState({
     id: '1',
@@ -75,6 +76,12 @@ const SignUp = ({navigation}) => {
       style={styles.page}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView showsVerticalScrollIndicator={false}>
+          <Gap height={10} />
+          <View style={styles.illustration}>
+            <SignUpIllustration />
+            <Gap height={20} />
+            <Text style={styles.textFillProfile}>Please Fill Your Profile</Text>
+          </View>
           <View style={styles.container}>
             <Text style={styles.txtContainer}>Select Vendor Type</Text>
             <Text style={{fontStyle: 'italic'}}>Avialable 5 Category</Text>
@@ -83,38 +90,45 @@ const SignUp = ({navigation}) => {
             <View>
               <FlatList
                 data={vendor}
+                //dataName={vendorName}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 style={{
                   padding: 10,
-                  backgroundColor: '#FFD0EC',
-                  borderRadius: 10,
+                  backgroundColor: 'white',
+                  //borderRadius: 10,
+                  borderWidth: 1,
+                  //borderColor: '#FFD0EC',
+                  borderRightColor: 'white',
+                  borderLeftColor: 'white',
+                  borderTopColor: '#FFD0EC',
+                  borderBottomColor: '#FFD0EC',
                 }}
                 renderItem={({item}) => (
                   <TouchableOpacity
                     style={{
                       backgroundColor:
-                        selectVendor.id == item.id ? '#B7FFBF' : 'white',
-                      width: 70,
-                      height: 70,
+                        selectVendor.id == item.id ? '#FFD0EC' : 'white',
+                      width: 80,
+                      height: 80,
                       marginRight: 17,
                       justifyContent: 'center',
                       alignItems: 'center',
                       borderRadius: 15,
                       elevation: 6,
+                      marginVertical: 7,
+                      padding: 3,
                     }}
                     onPress={() => setSelectVendor(item)}>
                     {item.icon}
+                    <Text style={styles.textNameVendor}>{item.vendorName}</Text>
                   </TouchableOpacity>
+                 
                 )}
               />
             </View>
           </View>
-          <View style={styles.illustration}>
-            <SignUpIllustration />
-            <Gap height={20} />
-            <Text style={styles.textFillProfile}>Please Fill Your Profile</Text>
-          </View>
+          
           <View style={styles.input}>
             <TextInput
               title="Vendor Name"
@@ -125,7 +139,7 @@ const SignUp = ({navigation}) => {
             <Gap height={20} />
             <TextInput
               title="Phone Number"
-              placeholder="Type your phone number or whatsapp"
+              placeholder="Type your phone number or Whatsapp number"
               keyboardType="number-pad"
               value={phoneNumber}
               onChangeText={value => setPhoneNumber(value)}
@@ -184,27 +198,31 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   container: {
-    marginTop: 50,
-    marginLeft: 30,
+    marginTop: 10,
+    //marginLeft: 30,
     marginBottom: 15,
+    //backgroundColor: 'yellow',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   txtContainer: {
-    fontSize: 20,
+    fontSize: 15,
     fontWeight: 'bold',
     color: 'black',
   },
   illustration: {
     alignItems: 'center',
     marginTop: 20,
-    marginBottom: 35,
+    marginBottom: 20,
   },
   textFillProfile: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#FFD0EC',
     fontWeight: 'bold',
   },
   input: {
     marginHorizontal: 30,
+    marginTop: 20,
   },
   btnWrapper: {
     alignItems: 'center',
@@ -254,4 +272,10 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     fontWeight: 'bold',
   },
+  textNameVendor: {
+    alignSelf: 'center',
+    marginTop: 6,
+    fontSize: 11,
+    color: 'black',
+  }
 });

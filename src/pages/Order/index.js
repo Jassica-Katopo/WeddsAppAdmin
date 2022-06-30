@@ -6,9 +6,12 @@ import {
   TouchableOpacity,
   ScrollView,
   FlatList,
+  Linking,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import FIREBASE from '../../config/Firebase';
+import {Button, Gap} from '../../components';
+import {Whatsapp} from '../../assets/icons';
 
 const Order = ({route}) => {
   const {uid} = route.params;
@@ -83,6 +86,24 @@ const Order = ({route}) => {
     });
   };
 
+  const sendOnWhatsApp = () => {
+    //let msg = this.state.msg;
+    let mobile = dataUser.phone;
+    if (mobile) {
+      let url = 'whatsapp://send?text=' + '&phone=62' + dataUser.phone;
+      Linking.openURL(url)
+        .then(data => {
+          console.log('WhatsApp Opened', data);
+        })
+        .catch(() => {
+          alert('Make sure Whatsapp installed on your device');
+        });
+    } else {
+      alert('Please insert mobile no');
+    }
+    console.log('phone number : ', mobile);
+  };
+
   const approve = () => {
     const data = {
       isReserve: false,
@@ -115,8 +136,6 @@ const Order = ({route}) => {
         flex: 1,
         paddingHorizontal: 20,
       }}>
-      {/* <Gap height={40} /> */}
-
       {!hasData && (
         <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
           <Text style={{color: '#FFD0EC', fontSize: 15}}>No Reservation!</Text>
@@ -126,44 +145,63 @@ const Order = ({route}) => {
         <View>
           {dataUser.userName === undefined ? (
             <View style={{alignItems: 'center'}}>
-            <Text style={{color: '#FFD0EC', fontSize: 15}}>No Reservation!</Text>
-            <TouchableOpacity
-              onPress={getOrderList}
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderWidth: 1,
-                backgroundColor: '#FFD0EC',
-                borderColor: '#FFD0EC',
-                width: 80,
-                borderRadius: 7,
-                marginTop: 6
-              }}>
-              <Text style={{color: 'white',fontWeight: 'bold', fontSize: 15}}>Refesh</Text>
-            </TouchableOpacity>
+              <Text style={{color: '#FFD0EC', fontSize: 15}}>
+                No Reservation!
+              </Text>
+              <TouchableOpacity
+                onPress={getOrderList}
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderWidth: 1,
+                  backgroundColor: '#FFD0EC',
+                  borderColor: '#FFD0EC',
+                  width: 80,
+                  borderRadius: 7,
+                  marginTop: 6,
+                }}>
+                <Text
+                  style={{color: 'white', fontWeight: 'bold', fontSize: 15}}>
+                  Refesh
+                </Text>
+              </TouchableOpacity>
             </View>
           ) : (
             <View style={styles.container}>
               <Image source={{uri: dataUser.image}} style={styles.image} />
+
               <View style={styles.wrapperTxt}>
                 <Text style={styles.nama}>{dataUser.userName}</Text>
-                <Text>{dataUser.phone}</Text>
+                <View style={styles.line} />
+                <Text style={{color: 'black'}}>
+                  Phone Number : {dataUser.phone}
+                </Text>
+                <TouchableOpacity
+                  onPress={sendOnWhatsApp}
+                  activeOpacity={0.7}
+                  style={styles.cht}>
+                  <Whatsapp />
+                  <Gap width={6} />
+                  <Text
+                    style={{color: 'black', textDecorationLine: 'underline'}}>
+                    Chat Customer
+                  </Text>
+                </TouchableOpacity>
                 <View style={{flexDirection: 'row'}}>
-                  {/* <Text>{dataUser.packageName}</Text> */}
-                  <Text>Rp.{dataUser.price}</Text>
+                  <Text style={{color: 'black', marginTop: 2,}}>Rp.{dataUser.price}</Text>
                 </View>
                 <Text style={styles.txtOrder}>
                   Wedding Date : {dataUser.desc}
                 </Text>
                 <View style={{alignItems: 'flex-start'}}>
                   {dataUser.isReserve === true ? (
-                    <Text style={{fontSize: 12, color: '#E9D35F'}}>
-                      Waiting for approvall
+                    <Text style={{color: '#E9D35F', marginTop: 2,}}>
+                      Waiting For Approval
                     </Text>
                   ) : null}
                   {dataUser.isApprove === true ? (
-                    <Text style={{fontSize: 12, color: '#5AD71F'}}>
-                      Approve
+                    <Text style={{color: '#5AD71F', marginTop: 2,}}>
+                      Reservation Approved
                     </Text>
                   ) : null}
                 </View>
@@ -173,7 +211,7 @@ const Order = ({route}) => {
                     activeOpacity={0.7}
                     style={styles.btn}>
                     <Text style={{fontWeight: 'bold', color: 'white'}}>
-                      Approve
+                      Approve Reservation
                     </Text>
                   </TouchableOpacity>
                 )}
@@ -207,16 +245,19 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     flexDirection: 'row',
     elevation: 4,
+    //alignItem: 'center',
     // marginTop: 148,
   },
   wrapperTxt: {
     marginLeft: 20,
     marginTop: 10,
-    width: 190,
+    flex: 1,
+    paddingRight: 20,
   },
   nama: {
-    fontFamily: 'Poppins-SemiBold',
     fontSize: 17,
+    color: 'black',
+    fontWeight: '900'
   },
   image: {
     width: 64,
@@ -226,6 +267,19 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   txtOrder: {
-    fontSize: 12,
+    color: 'black',
+    marginTop: 2,
+  },
+  line: {
+    borderWidth: 0.3,
+    marginTop: 5,
+    marginBottom: 15,
+    //marginHorizontal: 30,
+    //color: '#FFD0EC',
+    tintColor: '#FFD0EC',
+  },
+  cht: {
+    flexDirection: 'row',
+    marginTop: 2,
   },
 });
